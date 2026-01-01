@@ -71,5 +71,17 @@
       "imagePath": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Elisabeth_R%C3%B6ckel.jpg/500px-Elisabeth_R%C3%B6ckel.jpg"
     }
   ],
-  "users": []
+  "users": [
+    {
+      "email": "olivier@mail.com",
+      "password": "$2a$10$nxUmXSX8S4/EPF7.leGd1OnjU9ZZTb0HpMkJA0rvTgfQO/5D0kyzG",
+      "name": "example",
+      "isMale": true,
+      "age": 18,
+      "phoneNumber": "012345678",
+      "address": "TP Hue",
+      "bio": "Hello, it's me!",
+      "id": 1
+    }
+  ]
 }
