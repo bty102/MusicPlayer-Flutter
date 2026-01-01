@@ -1,36 +1,75 @@
 {
-  "users": [
-    {
-      "email": "olivier@mail.com",
-      "password": "$2a$10$Rij/bm2X8j8itAIp8WKQhukMIm8a5B7m6..Lxe.r2acbNpW1kue2q",
-      "id": 1
-    }
-  ],
-  "posts": [
+  "songs": [
     {
       "id": "1",
-      "title": "a title",
-      "views": 100
+      "name": "NGÔI SAO CÔ ĐƠN",
+      "singer": "JACK - J97",
+      "path": "https://ia600400.us.archive.org/8/items/ngoi-sao-co-don-jack-j-97-trao-luu-nhac-hot-v.-a-playlist-nhac-cua-tui/Ng%C3%B4i%20Sao%20C%C3%B4%20%C4%90%C6%A1n%20-%20Jack%20-%20J97%20-%20Tr%C3%A0o%20L%C6%B0u%20Nh%E1%BA%A1c%20Hot%20-%20V.A%20-%20Playlist%20NhacCuaTui.mp3",
+      "imagePath": "https://pianofingers.vn/wp-content/uploads/2022/07/Sheet-nha%CC%A3c-Ngo%CC%82i-Sao-Co%CC%82-Do%CC%9Bn-Jack-J97.jpg"
     },
     {
       "id": "2",
-      "title": "another title",
-      "views": 200
-    }
-  ],
-  "comments": [
-    {
-      "id": "1",
-      "text": "a comment about post 1",
-      "postId": "1"
+      "name": "Cheri, Cheri Lady",
+      "singer": "Modern Talking",
+      "path": "https://dn721906.ca.archive.org/0/items/modern-talking-the-very-best-of-modern-talking/03%20-%20Cheri%20Cheri%20Lady.mp3",
+      "imagePath": "https://upload.wikimedia.org/wikipedia/vi/d/dd/Cheri_Cheri_Lady.jpg"
     },
     {
-      "id": "2",
-      "text": "another comment about post 1",
-      "postId": "1"
+      "id": "3",
+      "name": "Brother Louie",
+      "singer": "Modern Talking",
+      "path": "https://dn721906.ca.archive.org/0/items/modern-talking-the-very-best-of-modern-talking/02%20-%20Brother%20Louie%20%2798%20%28New%20Version%29.mp3",
+      "imagePath": "https://upload.wikimedia.org/wikipedia/vi/b/b5/Brother_Louie.jpg"
+    },
+    {
+      "id": "4",
+      "name": "You're My Heart, You're My Soul",
+      "singer": "Modern Talking",
+      "path": "https://dn721906.ca.archive.org/0/items/modern-talking-the-very-best-of-modern-talking/01%20-%20You%27re%20My%20Heart%2C%20You%27re%20My%20Soul%20%2798.mp3",
+      "imagePath": "https://upload.wikimedia.org/wikipedia/vi/4/4d/You%27re_My_Heart%2C_You%27re_My_Soul.jpg"
+    },
+    {
+      "id": "5",
+      "name": "Forever Young",
+      "singer": "Alphaville",
+      "path": "https://dn721802.ca.archive.org/0/items/alphaville-1984-forever_young/06.%20Forever%20Young.mp3",
+      "imagePath": "https://upload.wikimedia.org/wikipedia/en/3/3b/Alphaville_-_Forever_Young_Single.jpg"
+    },
+    {
+      "id": "6",
+      "name": "Earth Song",
+      "singer": "Michael Jackson",
+      "path": "https://ia600703.us.archive.org/14/items/michael-jackson-1995-history-past-present-and-future-book1-uncensored-release-2-cd-320/05.%20Earth%20Song.mp3",
+      "imagePath": "https://upload.wikimedia.org/wikipedia/en/3/3e/Earth_Song_cover.jpg"
+    },
+    {
+      "id": "7",
+      "name": "Beat It",
+      "singer": "Michael Jackson",
+      "path": "https://dn721505.ca.archive.org/0/items/michael-jackson-1995-history-past-present-and-future-book1-uncensored-release-2-cd-320/10.%20Beat%20It.mp3",
+      "imagePath": "https://upload.wikimedia.org/wikipedia/vi/6/65/Michael_Jackson_-_Beat_It_cover.jpg"
+    },
+    {
+      "id": "8",
+      "name": "Attention",
+      "singer": "Charlie Puth",
+      "path": "https://ia601802.us.archive.org/5/items/fave2/Charlie%20Puth%20-%20Attention.mp3",
+      "imagePath": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Attention_%28Charlie_Puth_song%29_single_cover.svg/500px-Attention_%28Charlie_Puth_song%29_single_cover.svg.png"
+    },
+    {
+      "id": "9",
+      "name": "Laylalay",
+      "singer": "Jack",
+      "path": "https://dn710305.ca.archive.org/0/items/laylalay-jack-j-97-top-v-pop-nua-nam-2021-v.-a-playlist-nhac-cua-tui/Laylalay%20-%20Jack%20-%20J97%20-%20Top%20V-POP%20N%E1%BB%ADa%20N%C4%83m%202021%20-%20V.A%20-%20Playlist%20NhacCuaTui.mp3",
+      "imagePath": "https://i1.sndcdn.com/artworks-JM5sd7tGvkTFEqsW-kU5Evw-t500x500.jpg"
+    },
+    {
+      "id": "10",
+      "name": "Für Elise",
+      "singer": "Beethoven",
+      "path": "https://ia800308.us.archive.org/32/items/WoO59PocoMotoBagatelleInAMinorFurElise/FrEliseWoo59.mp3",
+      "imagePath": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Elisabeth_R%C3%B6ckel.jpg/500px-Elisabeth_R%C3%B6ckel.jpg"
     }
   ],
-  "profile": {
-    "name": "typicode"
-  }
+  "users": []
 }
