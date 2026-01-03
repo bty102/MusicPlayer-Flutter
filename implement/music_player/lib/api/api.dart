@@ -11,23 +11,27 @@ class Api {
     Token? token = null;
     String url = """${Api.protocol}://${Api.host}:${Api.port}/register""";
     var dio = Dio();
-    var response = await dio.post(
-      url,
-      data: {
-        "email": request.email,
-        "password": request.password,
-        "name": request.name,
-        "isMale": request.isMale,
-        "age": request.age,
-        "phoneNumber": request.phoneNumber,
-        "address": request.address,
-        "bio": request.bio,
-      },
-    );
+    try {
+      var response = await dio.post(
+        url,
+        data: {
+          "email": request.email,
+          "password": request.password,
+          "name": request.name,
+          "isMale": request.isMale,
+          "age": request.age,
+          "phoneNumber": request.phoneNumber,
+          "address": request.address,
+          "bio": request.bio,
+        },
+      );
 
-    if (response.statusCode == 201) {
-      token = Token.fromJson(response.data as Map<String, dynamic>);
+      if (response.statusCode == 201) {
+        token = Token.fromJson(response.data as Map<String, dynamic>);
+      }
+      return token;
+    } on DioException catch (e) {
+      return token;
     }
-    return token;
   }
 }

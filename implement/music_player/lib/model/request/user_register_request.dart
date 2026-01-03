@@ -6,7 +6,7 @@ class UserRegisterRequest {
   int age;
   String phoneNumber;
   String address;
-  String bio;
+  String? bio = null;
 
   UserRegisterRequest({
     required this.email,
@@ -16,6 +16,6 @@ class UserRegisterRequest {
     required this.age,
     required this.phoneNumber,
     required this.address,
-    required this.bio,
+    this.bio,
   });
 }

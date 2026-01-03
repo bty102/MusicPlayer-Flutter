@@ -82,6 +82,50 @@
       "address": "TP Hue",
       "bio": "Hello, it's me!",
       "id": 1
+    },
+    {
+      "email": "wtf@mail.com",
+      "password": "$2a$10$YRjTcOrO7PfihGLmhZjRyuYR.B7s2T4yiBJW/lSezfOHZ0mTNU0j6",
+      "name": "example",
+      "isMale": true,
+      "age": 18,
+      "phoneNumber": "012345678",
+      "address": "TP Hue",
+      "bio": null,
+      "id": 2
+    },
+    {
+      "email": "phuocpham033@gmail.com",
+      "password": "$2a$10$Rvt5ukkcxaw1w7HgSoe0qecuy1DPBL1IDcoIk1Lmp29gFXLOkhdna",
+      "name": "Phạm Ngọc Mộng Phước",
+      "isMale": true,
+      "age": 18,
+      "phoneNumber": "0782730023",
+      "address": "Huế",
+      "bio": "hihi",
+      "id": 3
+    },
+    {
+      "email": "phuocpham044@gmail.com",
+      "password": "$2a$10$BCW4zmhaOtQyopvFF9m44OogMm/.qxB.D0rB/WxfG1FuYTH3WVhxK",
+      "name": "bty dep zai",
+      "isMale": false,
+      "age": 20,
+      "phoneNumber": "0782730023",
+      "address": "TP Hồ Chí Minh",
+      "bio": "hahaahahaa",
+      "id": 4
+    },
+    {
+      "email": "22t1020329@husc.edu.vn",
+      "password": "$2a$10$oFjEvYs8ShxODEfx6vQ4UeSqMXYR5UpX3ASuvtTBXWLlQlu3qIm5a",
+      "name": "hello ",
+      "isMale": true,
+      "age": 20,
+      "phoneNumber": "0782730023",
+      "address": "TP Hồ Chí Minh",
+      "bio": "How are you",
+      "id": 5
     }
   ]
 }
