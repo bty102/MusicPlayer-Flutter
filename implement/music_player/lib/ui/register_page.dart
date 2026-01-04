@@ -23,6 +23,8 @@ class _RegisterPageState extends State<RegisterPage> {
   String? address;
   String? bio;
 
+  late bool hidePass;
+
   @override
   void initState() {
     email = null;
@@ -34,6 +36,8 @@ class _RegisterPageState extends State<RegisterPage> {
     address = null;
     bio = null;
 
+    hidePass = true;
+
     super.initState();
   }
 
@@ -41,7 +45,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Đăng ký 🎙️'),
+        title: Text('Đăng ký', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.pinkAccent,
         foregroundColor: Colors.white,
@@ -51,165 +55,274 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Widget myBody() {
-    return Form(
-      key: _formKey,
-      child: ListView(
-        scrollDirection: Axis.vertical,
-        children: [
-          TextFormField(
-            decoration: InputDecoration(label: Text('Email')),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập email';
-              }
-              RegExp regExp = RegExp(
-                r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-              );
-              if (!regExp.hasMatch(value)) {
-                return 'Định dạng email không đúng';
-              }
-              return null;
-            },
-            onChanged: (value) {
-              email = value;
-            },
-          ),
-          TextFormField(
-            decoration: InputDecoration(label: Text('Password')),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập mật khẩu';
-              }
-              if (value.length < 4) {
-                return 'Mật khẩu phải có ít nhât 4 ký tự';
-              }
-              return null;
-            },
-            onChanged: (value) {
-              password = value;
-            },
-          ),
-          TextFormField(
-            decoration: InputDecoration(label: Text('Name')),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập tên';
-              }
-              if (value.length < 3) {
-                return 'Tên phải có ít nhất 3 ký tự';
-              }
-              return null;
-            },
-            onChanged: (value) {
-              name = value;
-            },
-          ),
-          CheckboxListTile(
-            title: Text('Giới tính nam?'),
-            value: isMale,
-            onChanged: (value) {
-              setState(() {
-                isMale = value;
-              });
-            },
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
-          TextFormField(
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(label: Text('Tuổi')),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập tuổi';
-              }
-              int? age = int.tryParse(value);
-              if (age == null) {
-                return 'Tuổi không hợp lệ';
-              }
-              if (age < 16) {
-                return 'Tuổi thấp nhất là 16';
-              }
-              return null;
-            },
-            onChanged: (value) {
-              age = int.tryParse(value);
-            },
-          ),
-          TextFormField(
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(label: Text('Số điện thoại')),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập số điện thoại';
-              }
-              RegExp phoneRegex = RegExp(r'^0\d{9}$');
-              if (!phoneRegex.hasMatch(value)) {
-                return 'Số điện thoại không hợp lệ';
-              }
-              return null;
-            },
-            onChanged: (value) {
-              phoneNumber = value;
-            },
-          ),
-          TextFormField(
-            decoration: InputDecoration(label: Text('Địa chỉ')),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập địa chỉ';
-              }
-            },
-            onChanged: (value) {
-              address = value;
-            },
-          ),
-          TextFormField(
-            minLines: 3,
-            maxLines: null,
-            decoration: InputDecoration(label: Text('Tiểu sử')),
-            onChanged: (value) {
-              bio = value;
-            },
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              // Validate returns true if the form is valid, or false otherwise.
-              if (_formKey.currentState!.validate()) {
-                // If the form is valid, display a snackbar. In the real world,
-                // you'd often call a server or save the information in a database.
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   const SnackBar(content: Text('Processing Data')),
-                // );
-
-                Api api = Api();
-                UserRegisterRequest request = UserRegisterRequest(
-                  email: email!,
-                  password: password!,
-                  name: name!,
-                  isMale: isMale!,
-                  age: age!,
-                  phoneNumber: phoneNumber!,
-                  address: address!,
-                  bio: bio,
-                );
-                Token? token = await api.register(request);
-                if (token == null) {
-                  // Dang ky that bai
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Đăng ký thất bại')),
-                  );
-                  return;
+    return Container(
+      margin: EdgeInsets.only(top: 20, left: 10, right: 10),
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          scrollDirection: Axis.vertical,
+          children: [
+            Center(
+              child: Text(
+                "NEO MUSIC 🎶",
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.pink,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              decoration: InputDecoration(
+                label: Text('Email'),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                prefixIcon: Icon(Icons.alternate_email),
+                prefixIconColor: Colors.pinkAccent,
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng nhập email';
                 }
-                // Dang ky thanh cong
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Đăng ký thành công')),
+                RegExp regExp = RegExp(
+                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
                 );
-              }
-            },
-            child: const Text('Đăng ký'),
-          ),
-        ],
+                if (!regExp.hasMatch(value)) {
+                  return 'Định dạng email không đúng';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                email = value;
+              },
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              obscureText: hidePass,
+
+              decoration: InputDecoration(
+                label: Text('Password'),
+                prefixIcon: Icon(Icons.lock_outline),
+                prefixIconColor: Colors.pinkAccent,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                suffixIcon: hidePass
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            hidePass = !hidePass;
+                          });
+                        },
+                        icon: Icon(Icons.visibility),
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          setState(() {
+                            hidePass = !hidePass;
+                          });
+                        },
+                        icon: Icon(Icons.visibility_off),
+                      ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng nhập mật khẩu';
+                }
+                if (value.length < 4) {
+                  return 'Mật khẩu phải có ít nhât 4 ký tự';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                password = value;
+              },
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              decoration: InputDecoration(
+                label: Text('Name'),
+                prefixIcon: Icon(Icons.person_outline_sharp),
+                prefixIconColor: Colors.pinkAccent,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng nhập tên';
+                }
+                if (value.length < 3) {
+                  return 'Tên phải có ít nhất 3 ký tự';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                name = value;
+              },
+            ),
+            SizedBox(height: 20),
+            CheckboxListTile(
+              title: Text('Giới tính nam?'),
+              activeColor: Colors.pinkAccent,
+              checkColor: Colors.white,
+              // tileColor: const Color.fromARGB(255, 223, 213, 213),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              value: isMale,
+              onChanged: (value) {
+                setState(() {
+                  isMale = value;
+                });
+              },
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                label: Text('Tuổi'),
+
+                prefixIcon: Icon(Icons.cake_outlined),
+                prefixIconColor: Colors.pinkAccent,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng nhập tuổi';
+                }
+                int? age = int.tryParse(value);
+                if (age == null) {
+                  return 'Tuổi không hợp lệ';
+                }
+                if (age < 16) {
+                  return 'Tuổi thấp nhất là 16';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                age = int.tryParse(value);
+              },
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                label: Text('Số điện thoại'),
+                prefixIcon: Icon(Icons.phone_android),
+                prefixIconColor: Colors.pinkAccent,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng nhập số điện thoại';
+                }
+                RegExp phoneRegex = RegExp(r'^0\d{9}$');
+                if (!phoneRegex.hasMatch(value)) {
+                  return 'Số điện thoại không hợp lệ';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                phoneNumber = value;
+              },
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              decoration: InputDecoration(
+                label: Text('Địa chỉ'),
+                prefixIcon: Icon(Icons.location_on_outlined),
+                prefixIconColor: Colors.pinkAccent,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng nhập địa chỉ';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                address = value;
+              },
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              minLines: 1,
+              maxLines: null,
+              decoration: InputDecoration(
+                label: Text('Tiểu sử'),
+                prefixIcon: Icon(Icons.menu_book),
+                prefixIconColor: Colors.pinkAccent,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
+              onChanged: (value) {
+                bio = value;
+              },
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                // Validate returns true if the form is valid, or false otherwise.
+                if (_formKey.currentState!.validate()) {
+                  // If the form is valid, display a snackbar. In the real world,
+                  // you'd often call a server or save the information in a database.
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   const SnackBar(content: Text('Processing Data')),
+                  // );
+
+                  Api api = Api();
+                  UserRegisterRequest request = UserRegisterRequest(
+                    email: email!,
+                    password: password!,
+                    name: name!,
+                    isMale: isMale!,
+                    age: age!,
+                    phoneNumber: phoneNumber!,
+                    address: address!,
+                    bio: bio,
+                  );
+                  Token? token = await api.register(request);
+                  if (token == null) {
+                    // Dang ky that bai
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Đăng ký thất bại')),
+                    );
+                    return;
+                  }
+                  // Dang ky thanh cong
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Đăng ký thành công')),
+                  );
+                }
+              },
+              child: const Text('Đăng ký'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.pinkAccent,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
