@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:music_player/api/api.dart';
 import 'package:music_player/model/request/user_register_request.dart';
 import 'package:music_player/model/response/token.dart';
+import 'package:music_player/ui/login_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -310,8 +311,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     return;
                   }
                   // Dang ky thanh cong
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Đăng ký thành công')),
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   const SnackBar(content: Text('Đăng ký thành công')),
+                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
                   );
                 }
               },

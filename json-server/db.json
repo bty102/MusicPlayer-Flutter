@@ -5,7 +5,7 @@
       "name": "NGÔI SAO CÔ ĐƠN",
       "singer": "JACK - J97",
       "path": "https://ia600400.us.archive.org/8/items/ngoi-sao-co-don-jack-j-97-trao-luu-nhac-hot-v.-a-playlist-nhac-cua-tui/Ng%C3%B4i%20Sao%20C%C3%B4%20%C4%90%C6%A1n%20-%20Jack%20-%20J97%20-%20Tr%C3%A0o%20L%C6%B0u%20Nh%E1%BA%A1c%20Hot%20-%20V.A%20-%20Playlist%20NhacCuaTui.mp3",
-      "imagePath": "https://pianofingers.vn/wp-content/uploads/2022/07/Sheet-nha%CC%A3c-Ngo%CC%82i-Sao-Co%CC%82-Do%CC%9Bn-Jack-J97.jpg"
+      "imagePath": "https://i1.sndcdn.com/artworks-yywyCklgyq5BiEGX-eAxBDw-t500x500.jpg"
     },
     {
       "id": "2",
@@ -126,6 +126,17 @@
       "address": "TP Hồ Chí Minh",
       "bio": "How are you",
       "id": 5
+    },
+    {
+      "email": "bty@gmail.com",
+      "password": "$2a$10$q17ym/ObBK9vORTDHcuXPeKL6Pi5DyIgzMpKNY4RvPlmUJVguNWZm",
+      "name": "BTY",
+      "isMale": true,
+      "age": 21,
+      "phoneNumber": "0782730023",
+      "address": "Huế",
+      "bio": "Yêu nhiều em một lúc",
+      "id": 6
     }
   ]
 }
