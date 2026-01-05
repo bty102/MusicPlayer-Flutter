@@ -35,8 +35,8 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: Text("Đăng nhập", style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: Colors.pinkAccent,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
       body: myBody(),
     );
@@ -52,9 +52,9 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             Center(
               child: Text(
-                "NEO MUSIC 🎸",
+                "DINO MUSIC",
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                   color: Colors.pink,
                 ),

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -18,9 +20,12 @@ class SongsPage extends StatefulWidget {
 
 class _SongsPageState extends State<SongsPage> {
   late Future<List<SongResponse>?> songs;
+  List<SongResponse>? songsList;
   late Api api;
 
-  SongResponse? currentSong;
+  // int? currentSongIndex;
+
+  late bool loopASong;
 
   late AudioPlayer audioPlayer;
 
@@ -38,8 +43,10 @@ class _SongsPageState extends State<SongsPage> {
     api = Api();
     songs = api.getSongs(widget.accessToken);
 
-    currentSong = null;
+    // currentSongIndex = null;
     audioPlayer = AudioPlayer();
+    songsList = null;
+    loopASong = false;
     super.initState();
   }
 
@@ -63,13 +70,26 @@ class _SongsPageState extends State<SongsPage> {
       ),
       child: Column(
         children: [
-          renderCurrentSong(currentSong),
+          renderCurrentSong(),
           FutureBuilder(
             future: songs,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.data != null) {
-                  return Expanded(child: renderSongs(snapshot.data!));
+                  if (snapshot.data!.isEmpty) {
+                    return Center(child: Text('Không có bài hát nào'));
+                  }
+                  if (songsList == null) {
+                    songsList = snapshot.data;
+
+                    List<AudioSource> audioSources = [];
+                    for (var song in songsList!) {
+                      audioSources.add(AudioSource.uri(Uri.parse(song.path)));
+                    }
+                    audioPlayer.addAudioSources(audioSources);
+                    // currentSongIndex = 0;
+                  }
+                  return Expanded(child: renderSongs());
                 } else {
                   return Center(child: Text('Something went error'));
                 }
@@ -83,25 +103,25 @@ class _SongsPageState extends State<SongsPage> {
     );
   }
 
-  Widget renderSong(SongResponse song) {
+  Widget renderSong(int songIndex, bool isPlaying) {
+    SongResponse? song = songsList?.elementAt(songIndex);
+    if (song == null) {
+      return Center(child: Text(''));
+    }
     return InkWell(
-      onTap: () async {
-        if (audioPlayer.playing) {
-          await audioPlayer.stop();
-        }
+      onTap: () {
+        audioPlayer.seek(Duration.zero, index: songIndex);
 
-        await audioPlayer.dispose();
-        audioPlayer = AudioPlayer();
-        audioPlayer.setUrl(song.path);
-
-        setState(() {
-          currentSong = song;
-        });
+        // setState(() {
+        //   currentSongIndex = songIndex;
+        // });
       },
 
       child: Container(
         margin: EdgeInsets.only(bottom: 5),
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: BoxDecoration(
+          color: (isPlaying) ? Colors.pinkAccent : Colors.white,
+        ),
         child: Row(
           children: [
             Container(
@@ -117,9 +137,17 @@ class _SongsPageState extends State<SongsPage> {
                 children: [
                   Text(
                     song.name,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: isPlaying ? Colors.white : Colors.black,
+                    ),
                   ),
-                  Text(song.singer, style: TextStyle(color: Colors.grey)),
+                  Text(
+                    song.singer,
+                    style: TextStyle(
+                      color: isPlaying ? Colors.white : Colors.grey,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -129,90 +157,165 @@ class _SongsPageState extends State<SongsPage> {
     );
   }
 
-  Widget renderSongs(List<SongResponse> songs) {
-    return ListView.separated(
-      scrollDirection: Axis.vertical,
-      itemCount: songs.length,
-      itemBuilder: (context, index) {
-        return renderSong(songs[index]);
-      },
-      separatorBuilder: (context, index) {
-        return SizedBox(height: 5);
+  Widget renderSongs() {
+    return StreamBuilder(
+      stream: audioPlayer.currentIndexStream,
+      builder: (context, snapshot) {
+        final playingIndex = snapshot.data;
+
+        return ListView.separated(
+          scrollDirection: Axis.vertical,
+          itemCount: songsList?.length ?? 0,
+          itemBuilder: (context, index) {
+            if (index == playingIndex) {
+              return renderSong(index, true);
+            }
+            return renderSong(index, false);
+          },
+          separatorBuilder: (context, index) {
+            return SizedBox(height: 5);
+          },
+        );
       },
     );
   }
 
-  Widget renderCurrentSong(SongResponse? song) {
-    if (song == null) {
-      return Center(child: Text('Chưa chọn bài hát'));
-    }
-    return Container(
-      child: Column(
-        children: [
-          Image.network(song.imagePath, width: 100, height: 100),
-          Text(song.name),
-          Text(song.singer),
-          StreamBuilder<PlayerState>(
-            stream: audioPlayer.playerStateStream,
-            builder: (context, snapshot) {
-              final playerState = snapshot.data;
-              final processingState = playerState?.processingState;
-              final playing = playerState?.playing;
+  Widget renderCurrentSong() {
+    // SongResponse? song = (currentSongIndex == null)
+    //     ? null
+    //     : songsList?.elementAt(currentSongIndex!);
+    // if (song == null) {
+    //   return Center(child: Text('Chưa chọn bài hát'));
+    // }
+    return StreamBuilder(
+      stream: audioPlayer.currentIndexStream,
+      builder: (context, snapshot) {
+        final playingIndex = snapshot.data;
+        SongResponse? song = (playingIndex == null)
+            ? null
+            : (songsList?.elementAt(playingIndex));
+        if (song == null) {
+          return Text('');
+        }
+        return Container(
+          child: Column(
+            children: [
+              Image.network(song.imagePath, width: 100, height: 100),
+              Text(song.name, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(song.singer, style: TextStyle(color: Colors.grey)),
 
-              if (processingState == ProcessingState.loading ||
-                  processingState == ProcessingState.buffering) {
-                return const CircularProgressIndicator();
-              } else if (playing != true) {
-                return IconButton(
-                  icon: const Icon(Icons.play_arrow),
-                  iconSize: 64.0,
-                  onPressed: audioPlayer.play,
-                );
-              } else if (processingState != ProcessingState.completed) {
-                return IconButton(
-                  icon: const Icon(Icons.pause),
-                  iconSize: 64.0,
-                  onPressed: audioPlayer.pause,
-                );
-              } else {
-                return IconButton(
-                  icon: const Icon(Icons.replay),
-                  iconSize: 64.0,
-                  onPressed: () async {
-                    await audioPlayer.pause();
-                    await audioPlayer.seek(Duration.zero);
-                    audioPlayer.play();
-                  },
-                );
-              }
-            },
-          ),
-          StreamBuilder<PositionData>(
-            stream: positionDataStream,
-            builder: (context, snapshot) {
-              final positionData = snapshot.data;
-              final progress = positionData?.position ?? Duration.zero;
-              final buffered = positionData?.bufferedPosition ?? Duration.zero;
-              final total = positionData?.duration ?? Duration.zero;
-              return ProgressBar(
-                progress: progress,
-                buffered: buffered,
-                total: total,
-                onSeek: (duration) async {
-                  if (audioPlayer.playerState.processingState ==
-                      ProcessingState.completed) {
-                    await audioPlayer.pause();
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        loopASong = !loopASong;
+                      });
+                      if (loopASong) {
+                        audioPlayer.setLoopMode(LoopMode.one);
+                      } else {
+                        audioPlayer.setLoopMode(LoopMode.off);
+                      }
+                    },
+                    icon: Icon(
+                      Icons.repeat,
+                      color: loopASong ? Colors.pinkAccent : Colors.black,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      if (audioPlayer.hasPrevious) {
+                        audioPlayer.seekToPrevious();
+                      }
+                    },
+                    icon: Icon(Icons.skip_previous),
+                  ),
+                  StreamBuilder<PlayerState>(
+                    stream: audioPlayer.playerStateStream,
+                    builder: (context, snapshot) {
+                      final playerState = snapshot.data;
+                      final processingState = playerState?.processingState;
+                      final playing = playerState?.playing;
 
-                    await audioPlayer.seek(duration);
-                    audioPlayer.play();
-                  }
-                  audioPlayer.seek(duration);
+                      if (processingState == ProcessingState.loading ||
+                          processingState == ProcessingState.buffering) {
+                        return const CircularProgressIndicator();
+                      } else if (playing != true) {
+                        return IconButton(
+                          icon: const Icon(Icons.play_arrow),
+                          iconSize: 64.0,
+                          onPressed: audioPlayer.play,
+                        );
+                      } else if (processingState != ProcessingState.completed) {
+                        return IconButton(
+                          icon: const Icon(Icons.pause),
+                          iconSize: 64.0,
+                          onPressed: audioPlayer.pause,
+                        );
+                      } else {
+                        return IconButton(
+                          icon: const Icon(Icons.replay),
+                          iconSize: 64.0,
+                          onPressed: () async {
+                            await audioPlayer.pause();
+                            await audioPlayer.seek(Duration.zero);
+                            audioPlayer.play();
+                          },
+                        );
+                      }
+                    },
+                  ),
+
+                  IconButton(
+                    onPressed: () {
+                      if (audioPlayer.hasNext) {
+                        audioPlayer.seekToNext();
+                      }
+                    },
+                    icon: Icon(Icons.skip_next),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Random random = Random();
+                      audioPlayer.seek(
+                        Duration.zero,
+                        index: random.nextInt(audioPlayer.audioSources.length),
+                      );
+                    },
+                    icon: Icon(Icons.crop_outlined),
+                  ),
+                ],
+              ),
+              StreamBuilder<PositionData>(
+                stream: positionDataStream,
+                builder: (context, snapshot) {
+                  final positionData = snapshot.data;
+                  final progress = positionData?.position ?? Duration.zero;
+                  final buffered =
+                      positionData?.bufferedPosition ?? Duration.zero;
+                  final total = positionData?.duration ?? Duration.zero;
+                  return ProgressBar(
+                    progress: progress,
+                    buffered: buffered,
+                    total: total,
+                    onSeek: (duration) async {
+                      if (audioPlayer.playerState.processingState ==
+                          ProcessingState.completed) {
+                        await audioPlayer.pause();
+
+                        await audioPlayer.seek(duration);
+                        audioPlayer.play();
+                      }
+                      audioPlayer.seek(duration);
+                    },
+                  );
                 },
-              );
-            },
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

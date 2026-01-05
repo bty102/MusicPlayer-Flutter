@@ -48,8 +48,8 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: Text('Đăng ký', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
-        backgroundColor: Colors.pinkAccent,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
       body: myBody(),
     );
@@ -65,9 +65,9 @@ class _RegisterPageState extends State<RegisterPage> {
           children: [
             Center(
               child: Text(
-                "NEO MUSIC 🎶",
+                "DINO MUSIC",
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                   color: Colors.pink,
                 ),
@@ -326,6 +326,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 foregroundColor: Colors.white,
               ),
             ),
+            SizedBox(height: 50),
           ],
         ),
       ),
