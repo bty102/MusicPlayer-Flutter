@@ -1,7 +1,11 @@
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:music_player/api/api.dart';
+import 'package:music_player/model/position_data.dart';
 import 'package:music_player/model/response/song_response.dart';
 import 'package:music_player/model/response/token.dart';
+import 'package:rxdart/rxdart.dart';
 
 class SongsPage extends StatefulWidget {
   String accessToken;
@@ -16,10 +20,26 @@ class _SongsPageState extends State<SongsPage> {
   late Future<List<SongResponse>?> songs;
   late Api api;
 
+  SongResponse? currentSong;
+
+  late AudioPlayer audioPlayer;
+
+  Stream<PositionData> get positionDataStream =>
+      Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
+        audioPlayer.positionStream,
+        audioPlayer.bufferedPositionStream,
+        audioPlayer.durationStream,
+        (position, bufferedPosition, duration) =>
+            PositionData(position, bufferedPosition, duration ?? Duration.zero),
+      );
+
   @override
   void initState() {
     api = Api();
     songs = api.getSongs(widget.accessToken);
+
+    currentSong = null;
+    audioPlayer = AudioPlayer();
     super.initState();
   }
 
@@ -43,7 +63,7 @@ class _SongsPageState extends State<SongsPage> {
       ),
       child: Column(
         children: [
-          Container(),
+          renderCurrentSong(currentSong),
           FutureBuilder(
             future: songs,
             builder: (context, snapshot) {
@@ -65,8 +85,18 @@ class _SongsPageState extends State<SongsPage> {
 
   Widget renderSong(SongResponse song) {
     return InkWell(
-      onTap: () {
-        print(song.name);
+      onTap: () async {
+        if (audioPlayer.playing) {
+          await audioPlayer.stop();
+        }
+
+        await audioPlayer.dispose();
+        audioPlayer = AudioPlayer();
+        audioPlayer.setUrl(song.path);
+
+        setState(() {
+          currentSong = song;
+        });
       },
 
       child: Container(
@@ -109,6 +139,80 @@ class _SongsPageState extends State<SongsPage> {
       separatorBuilder: (context, index) {
         return SizedBox(height: 5);
       },
+    );
+  }
+
+  Widget renderCurrentSong(SongResponse? song) {
+    if (song == null) {
+      return Center(child: Text('Chưa chọn bài hát'));
+    }
+    return Container(
+      child: Column(
+        children: [
+          Image.network(song.imagePath, width: 100, height: 100),
+          Text(song.name),
+          Text(song.singer),
+          StreamBuilder<PlayerState>(
+            stream: audioPlayer.playerStateStream,
+            builder: (context, snapshot) {
+              final playerState = snapshot.data;
+              final processingState = playerState?.processingState;
+              final playing = playerState?.playing;
+
+              if (processingState == ProcessingState.loading ||
+                  processingState == ProcessingState.buffering) {
+                return const CircularProgressIndicator();
+              } else if (playing != true) {
+                return IconButton(
+                  icon: const Icon(Icons.play_arrow),
+                  iconSize: 64.0,
+                  onPressed: audioPlayer.play,
+                );
+              } else if (processingState != ProcessingState.completed) {
+                return IconButton(
+                  icon: const Icon(Icons.pause),
+                  iconSize: 64.0,
+                  onPressed: audioPlayer.pause,
+                );
+              } else {
+                return IconButton(
+                  icon: const Icon(Icons.replay),
+                  iconSize: 64.0,
+                  onPressed: () async {
+                    await audioPlayer.pause();
+                    await audioPlayer.seek(Duration.zero);
+                    audioPlayer.play();
+                  },
+                );
+              }
+            },
+          ),
+          StreamBuilder<PositionData>(
+            stream: positionDataStream,
+            builder: (context, snapshot) {
+              final positionData = snapshot.data;
+              final progress = positionData?.position ?? Duration.zero;
+              final buffered = positionData?.bufferedPosition ?? Duration.zero;
+              final total = positionData?.duration ?? Duration.zero;
+              return ProgressBar(
+                progress: progress,
+                buffered: buffered,
+                total: total,
+                onSeek: (duration) async {
+                  if (audioPlayer.playerState.processingState ==
+                      ProcessingState.completed) {
+                    await audioPlayer.pause();
+
+                    await audioPlayer.seek(duration);
+                    audioPlayer.play();
+                  }
+                  audioPlayer.seek(duration);
+                },
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

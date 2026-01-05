@@ -38,6 +38,9 @@ dependencies:
   json_serializable: ^6.11.3
   json_annotation: ^4.9.0
   build_runner: ^2.10.4
+  just_audio: ^0.10.5
+  audio_video_progress_bar: ^2.0.3
+  rxdart: ^0.27.7
   
 dev_dependencies:
   flutter_test:
