@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:music_player/model/request/user_login_request.dart';
 import 'package:music_player/model/request/user_register_request.dart';
 import 'package:music_player/model/response/song_response.dart';
 import 'package:music_player/model/response/token.dart';
+import 'package:music_player/model/response/user_response.dart';
 
 class Api {
   static final String protocol = "http";
@@ -81,6 +83,34 @@ class Api {
       }
     } on DioException catch (e) {
       return songs;
+    }
+  }
+
+  Future<UserResponse?> getMyInfo(String accessToken) async {
+    UserResponse? user = null;
+
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+
+    String userId = decodedToken['sub'];
+
+    String url =
+        """${Api.protocol}://${Api.host}:${Api.port}/600/users/$userId""";
+
+    var dio = Dio();
+    try {
+      var response = await dio.request(
+        url,
+        options: Options(
+          method: 'GET',
+          headers: {"Authorization": "Bearer $accessToken"},
+        ),
+      );
+      if (response.statusCode == 200) {
+        user = UserResponse.fromJson(response.data as Map<String, dynamic>);
+      }
+      return user;
+    } on DioException catch (e) {
+      return user;
     }
   }
 }

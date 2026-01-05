@@ -7,6 +7,7 @@ import 'package:music_player/api/api.dart';
 import 'package:music_player/model/position_data.dart';
 import 'package:music_player/model/response/song_response.dart';
 import 'package:music_player/model/response/token.dart';
+import 'package:music_player/ui/my_info_page.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SongsPage extends StatefulWidget {
@@ -59,6 +60,53 @@ class _SongsPageState extends State<SongsPage> {
         backgroundColor: Colors.white,
       ),
       body: myBody(),
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.pinkAccent),
+              child: Text(
+                'DINO',
+                style: TextStyle(
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text('Songs'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SongsPage(accessToken: widget.accessToken),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Me'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MyInfoPage(accessToken: widget.accessToken),
+                  ),
+                );
+              },
+            ),
+            ListTile(title: const Text('About'), onTap: () {}),
+          ],
+        ),
+      ),
     );
   }
 

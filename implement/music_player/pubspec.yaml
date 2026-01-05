@@ -41,6 +41,7 @@ dependencies:
   just_audio: ^0.10.5
   audio_video_progress_bar: ^2.0.3
   rxdart: ^0.27.7
+  jwt_decoder: ^2.0.1
   
 dev_dependencies:
   flutter_test:
