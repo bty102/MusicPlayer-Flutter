@@ -28,7 +28,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "My info",
+          "Me",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.pinkAccent,
@@ -68,6 +68,12 @@ class _MyInfoPageState extends State<MyInfoPage> {
     return ListView(
       scrollDirection: Axis.vertical,
       children: [
+        Image.network(
+          "https://cdn-icons-png.flaticon.com/512/1053/1053244.png",
+          width: 100,
+          height: 100,
+        ),
+        SizedBox(height: 10),
         Row(
           children: [
             // Icon(Icons.person, color: Colors.pinkAccent),

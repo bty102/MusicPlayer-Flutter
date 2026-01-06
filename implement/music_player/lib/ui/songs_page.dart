@@ -4,6 +4,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/api/api.dart';
+import 'package:music_player/component/rotating_disc.dart';
 import 'package:music_player/model/position_data.dart';
 import 'package:music_player/model/response/song_response.dart';
 import 'package:music_player/model/response/token.dart';
@@ -52,6 +53,12 @@ class _SongsPageState extends State<SongsPage> {
   }
 
   @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -70,12 +77,14 @@ class _SongsPageState extends State<SongsPage> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(color: Colors.pinkAccent),
-              child: Text(
-                'DINO',
-                style: TextStyle(
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              child: Center(
+                child: Text(
+                  'DINO',
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -94,6 +103,7 @@ class _SongsPageState extends State<SongsPage> {
             ListTile(
               title: const Text('Me'),
               onTap: () {
+                audioPlayer.stop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -177,7 +187,7 @@ class _SongsPageState extends State<SongsPage> {
               width: 100,
               height: 100,
               decoration: BoxDecoration(),
-              child: Image.network(song.imagePath),
+              child: Image.network(song.imagePath, fit: BoxFit.fill),
             ),
             Expanded(
               child: Column(
@@ -248,7 +258,18 @@ class _SongsPageState extends State<SongsPage> {
         return Container(
           child: Column(
             children: [
-              Image.network(song.imagePath, width: 100, height: 100),
+              // Image.network(song.imagePath, width: 100, height: 100),
+              StreamBuilder<PlayerState>(
+                stream: audioPlayer.playerStateStream,
+                builder: (context, snapshot) {
+                  final playerState = snapshot.data;
+                  final playing = playerState?.playing ?? false;
+                  return RotatingDisc(
+                    isPlaying: playing,
+                    imageUrl: song.imagePath,
+                  );
+                },
+              ),
               Text(song.name, style: TextStyle(fontWeight: FontWeight.bold)),
               Text(song.singer, style: TextStyle(color: Colors.grey)),
 
@@ -357,6 +378,9 @@ class _SongsPageState extends State<SongsPage> {
                       }
                       audioPlayer.seek(duration);
                     },
+                    progressBarColor: Colors.pinkAccent,
+                    thumbColor: Colors.pink,
+                    baseBarColor: Colors.grey,
                   );
                 },
               ),
